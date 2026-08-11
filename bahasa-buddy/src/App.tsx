@@ -114,13 +114,22 @@ function App() {
           onToggleTheme={() => setDarkMode(!darkMode)}
           mode={mode}
           />
-          
-        <main className="chat-container">
+        
+        {/* Chat container: if touch the menu will close */}
+        <main
+          className="chat-container"
+          onClick={() => {
+            if (menuOpen) {
+              setMenuOpen(false);
+            }
+          }}
+        >
           {/* Chat will go here */}
 
-          {/* This holds the messages*/}
+          {/* This holds the messages */}
           {messages.map((message) => (
             <Message
+              key={message.id}
               id={message.id}
               sender={message.sender}
               message={message.message}
@@ -138,7 +147,16 @@ function App() {
         </main>
 
         {/* Input field for sending messages */}
-        <InputField onSendMessage={handleSendMessage}/>
+        {/* If the input area is touch and the width is less than 400 menu will close */}
+        <div
+          onClick={() => {
+            if (window.innerWidth <= 400 && menuOpen) {
+              setMenuOpen(false);
+            }
+          }}
+        >
+          <InputField onSendMessage={handleSendMessage} />
+        </div>
       </div>
       
     </div>
