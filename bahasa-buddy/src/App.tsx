@@ -57,7 +57,7 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await fetch("https://bahasabuddy-8zct.onrender.com", {
+      const response = await fetch("https://bahasabuddy-8zct.onrender.com/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
