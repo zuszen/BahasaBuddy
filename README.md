@@ -4,6 +4,10 @@ BahasaBuddy is a personal project I created to help me learn and better understa
 
 The project currently focuses on **Indonesian ↔ English translation**, with additional explanations to help me understand how words and phrases are used in context.
 
+## Live Demo
+
+[**Try BahasaBuddy**](https://bahasa-buddy-smoky.vercel.app/)
+
 ## Features
 
 * Indonesian → English translation
@@ -14,10 +18,10 @@ The project currently focuses on **Indonesian ↔ English translation**, with ad
 * Chat-based interface
 * Light and dark mode
 
-
 ## Future Plans
 
 The project may eventually be expanded beyond translation to include **conversation practice** and other language-learning features.
 
 ## Status
+
 Currently a personal translation project focused on helping me learn Indonesian.
