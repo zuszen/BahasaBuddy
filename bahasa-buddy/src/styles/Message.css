@@ -1,0 +1,38 @@
+.message {
+  display: grid;
+  grid-template-columns: 120px 20px 1fr;
+
+  padding: 8px 16px;
+  text-align: left;
+  line-height: 1.5;
+
+  white-space: normal;
+}
+
+.message strong {
+  font-weight: 600;
+}
+
+.message-text {
+  min-width: 0;
+  white-space: normal;
+}
+
+.message-text h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.message-text p {
+  margin: 0 0 12px;
+}
+
+.message-text ul {
+  margin: 0 0 12px;
+  padding-left: 24px;
+}
+
+.message-text li {
+  margin-bottom: 4px;
+}

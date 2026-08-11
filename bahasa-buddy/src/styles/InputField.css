@@ -1,0 +1,60 @@
+.input-field {
+  
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+
+  width: 100%;
+  padding: 16px;
+
+  border-top: 1px solid var(--border-color);
+  background-color: var(--header-bg);
+}
+
+.input-field textarea {
+  flex: 1;
+
+  box-sizing: border-box;
+  min-height: 44px;
+  max-height: 160px;
+
+  padding: 12px 14px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+
+  outline: none;
+  resize: none;
+
+  background-color: var(--input-bg);
+  color: var(--text-color);
+
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.input-field textarea::placeholder {
+  color: var(--placeholder-color);
+}
+
+.input-field textarea:focus {
+  border-color: #8a96ff;
+}
+
+.input-field button {
+  height: 44px;
+  padding: 0 18px;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: #8a96ff;
+  color: white;
+
+  cursor: pointer;
+}
+
+.input-field button:hover {
+  background-color: #626bb6;
+}
