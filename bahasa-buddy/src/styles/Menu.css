@@ -49,6 +49,7 @@
 }
 
 .menu-content {
+  height: 100%;
   padding: 16px;
 
   display: flex;
@@ -76,6 +77,30 @@
 
 .menu-item:hover {
   background-color: var(--hover-bg);
+}
+
+.menu-content-bottom{
+  display: flex;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.export-button {
+  height: 44px;
+  width: 100%;
+  padding: 0 18px;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--export-buttons-bg);
+  color: var(--export-buttons-txt-color);
+
+  cursor: pointer;
+}
+
+.export-button:hover {
+  background-color: var(--export-buttons-bg-hover);
 }
 
 .active-indicator {

@@ -9,6 +9,9 @@ import Message from "./components/Message";
 import type { MessageData } from "./types/Message";
 import type { ChatMode } from "./types/ChatMode";
 
+import { pdf } from "@react-pdf/renderer";
+import ChatPDF from "./components/ChatPDF";
+
 function App() {
 
   // Set Initial States
@@ -32,7 +35,7 @@ function App() {
 
     const interval = setInterval(() => {
       setProcessingDots((dots) => {
-        return dots.length === 3 ? "." : dots + ".";
+        return dots.length === 5 ? "." : dots + ".";
       });
     }, 1000);
 
@@ -71,9 +74,9 @@ function App() {
       const data = await response.json();
 
       console.log(
-  "Frontend Gemini response:",
-  JSON.stringify(data.message)
-);
+        "Frontend Gemini response:",
+        JSON.stringify(data.message)
+      );
 
       // Add backend response to chat
       const botMessage: MessageData = {
@@ -86,13 +89,51 @@ function App() {
         ...currentMessages,
         botMessage,
       ]);
-    } catch (error) {
+      } catch (error) {
       console.error("Backend error:", error);
-    } finally {
+      } finally {
       // Stop processing indicator
       setLoading(false);
-    }
+      }
   };
+
+  // Function to export chat messages to a text file
+  const exportChat = async () => {
+    // Get the chat container element
+    const chatContainer = document.getElementById("chat-container") as HTMLElement | null;
+
+    // If container does not exist, return
+    if (!chatContainer) {
+      console.error("Chat container not found");
+      return;
+    }
+
+    const chatHTML = chatContainer.innerHTML;
+
+    // Format: YYYY-MM-DD HH-MM AM/PM
+    const dateTime = new Date().toLocaleDateString().replace(/\//g, '-') 
+                    + " " + new Date().toLocaleTimeString().slice(0, 5).replace(/:/g, '-')
+                    + " " + new Date().toLocaleTimeString().slice(9, 11) ;
+
+    const blob = await pdf(
+      <ChatPDF html={chatHTML} dateTime={dateTime} />
+    ).toBlob();
+
+    console.log("Html created:", chatHTML);
+
+    // Download the PDF
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+
+    // Use current time in the filename for uniqueness
+    a.download = `BahasaBuddy chat [${dateTime}].pdf`;
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+  }
 
   return (
 
@@ -103,6 +144,7 @@ function App() {
           onClose={() => setMenuOpen(false)}
           mode={mode}
           onModeChange={setMode}
+          onExport={exportChat}
         />
       )}
 
@@ -117,6 +159,7 @@ function App() {
         
         {/* Chat container: if touch the menu will close */}
         <main
+          id="chat-container"
           className="chat-container"
           onClick={() => {
             if (menuOpen) {

@@ -5,9 +5,10 @@ interface MenuProps {
   onClose: () => void;
   mode: ChatMode;
   onModeChange: (mode: ChatMode) => void;
+  onExport: () => void;
 }
 
-function Menu({ onClose, mode, onModeChange }: MenuProps) {
+function Menu({ onClose, mode, onModeChange, onExport }: MenuProps) {
   return (
     <aside className="menu">
       <div className="menu-header">
@@ -46,6 +47,16 @@ function Menu({ onClose, mode, onModeChange }: MenuProps) {
             <span className="active-indicator" />
           )}
         </button>
+
+        {/* Export Chat */}  
+        <div className="menu-content-bottom">
+          <button
+            className="export-button"
+            onClick={onExport}
+          >
+            <span>Export Chat</span>
+          </button>
+        </div>
       </div>
     </aside>
   );

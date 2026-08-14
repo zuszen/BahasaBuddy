@@ -49,12 +49,12 @@
   border: none;
   border-radius: 12px;
 
-  background-color: #8a96ff;
+  background-color: var(--send-buttons-bg);
   color: white;
 
   cursor: pointer;
 }
 
 .input-field button:hover {
-  background-color: #626bb6;
+  background-color: var(--send-buttons-bg-hover);
 }
