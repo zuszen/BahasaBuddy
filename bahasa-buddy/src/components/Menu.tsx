@@ -24,7 +24,7 @@ function Menu({ onClose, mode, onModeChange, onExport }: MenuProps) {
       </div>
 
       <div className="menu-content">
-        <h4>Chat Mode:</h4>
+        <h4>Mode:</h4>
 
         <button
           className="menu-item"
