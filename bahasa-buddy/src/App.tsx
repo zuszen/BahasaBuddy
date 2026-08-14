@@ -16,7 +16,8 @@ function App() {
 
   // Set Initial States
   const [menuOpen, setMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState( // Set the dark mode based on the user's system preference
+                                  window.matchMedia("(prefers-color-scheme: dark)").matches); 
   const [mode, setMode] = useState<ChatMode>("in-to-en");
 
   // This holds the messages in the chat, each message has a sender and a message
