@@ -6,13 +6,38 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import Html from "react-pdf-html";
+import type { MessageData } from "../types/Message";
 
 interface ChatPDFProps {
-  html: string;
+  messages: MessageData[];
   dateTime: string;
 }
 
-function ChatPDF({ html, dateTime }: ChatPDFProps) {
+function markdownToHTML(markdown: string): string {
+    let html = markdown;
+
+    // Convert \n to newline in string first
+    html = html.replace(/\\n/g, "\n");
+
+    // convert heading and bold text to bold text
+    html = html.replace(/^#+ (.*)$/gm, "<strong>$1</strong>");
+    html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+    // Convert list items to <li> elements
+    html = html.replace(/^\s*-\s+(.*)$/gm, "<li>$1</li>");
+
+    // Convert newline in string to <br> for HTML rendering
+    html = html.replace(/\n/g, "<br>");
+
+    return html;
+}
+
+function messageToHTML(messages: MessageData[]): string {
+    const htmlMessages = messages.map((message) => `<tr><td><strong>${message.sender}</strong></td> <td>${markdownToHTML(message.message)}</td></tr>`).join("");
+    return htmlMessages;
+}
+
+function ChatPDF({ messages, dateTime }: ChatPDFProps) {
   const pageStyles = StyleSheet.create({
     page: {
       backgroundColor: "white",
@@ -35,10 +60,6 @@ function ChatPDF({ html, dateTime }: ChatPDFProps) {
       marginBottom: 3,
     },
 
-    exportText: {
-      fontSize: 9,
-    },
-
     divider: {
       borderBottomWidth: 1,
       borderBottomColor: "#000000",
@@ -46,6 +67,14 @@ function ChatPDF({ html, dateTime }: ChatPDFProps) {
     },
   });
 
+  const html = '<style>' +
+                'table {width: 100%;}' + 
+                'td {padding-bottom: 10px; font-size: 12px;}' + 
+                'td:first-child {width: 20px;} </style>' + 
+                '<body><table>' + messageToHTML(messages) + 
+                '</table></body>';
+
+  //console.log("HTML for PDF:", html);
   return (
     <Document>
       <Page size="A4" style={pageStyles.page}>
@@ -59,17 +88,13 @@ function ChatPDF({ html, dateTime }: ChatPDFProps) {
           <Text style={pageStyles.date}>
             {dateTime}
           </Text>
-
-          <Text style={pageStyles.exportText}>
-            Export
-          </Text>
         </View>
 
         {/* Divider */}
         <View style={pageStyles.divider} />
 
         {/* Chat */}
-        <Html >
+        <Html>
           {html}
         </Html>
 

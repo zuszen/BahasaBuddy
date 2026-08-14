@@ -99,27 +99,24 @@ function App() {
 
   // Function to export chat messages to a text file
   const exportChat = async () => {
-    // Get the chat container element
-    const chatContainer = document.getElementById("chat-container") as HTMLElement | null;
-
-    // If container does not exist, return
-    if (!chatContainer) {
-      console.error("Chat container not found");
+    if (messages.length === 0) {
+      alert("No messages to export.");
       return;
     }
 
-    const chatHTML = chatContainer.innerHTML;
-
     // Format: YYYY-MM-DD HH-MM AM/PM
-    const dateTime = new Date().toLocaleDateString().replace(/\//g, '-') 
-                    + " " + new Date().toLocaleTimeString().slice(0, 5).replace(/:/g, '-')
-                    + " " + new Date().toLocaleTimeString().slice(9, 11) ;
+    const now = new Date();
+    const dateTime =  now.toLocaleDateString().replace(/\//g, '-') + 
+                      " " + 
+                      now.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      });
 
     const blob = await pdf(
-      <ChatPDF html={chatHTML} dateTime={dateTime} />
+      <ChatPDF messages={messages} dateTime={dateTime} />
     ).toBlob();
-
-    console.log("Html created:", chatHTML);
 
     // Download the PDF
     const url = URL.createObjectURL(blob);
