@@ -34,9 +34,7 @@ function Header({ menuOpen, onMenuClick, darkMode, onToggleTheme, mode, onModeCh
             )}
 
             <div
-
                 className="theme-toggle"
-                title="Change mode"
                 onClick={() => {
                     if (mode === "in-to-en") {
                         onModeChange("en-to-in");
