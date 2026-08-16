@@ -55,7 +55,7 @@ function Header({ menuOpen, onMenuClick, darkMode, onToggleTheme, mode, onModeCh
                 title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
                 onClick={onToggleTheme}
                 >
-                {darkMode ? "☀" : "☾"}
+                {darkMode ? "☾" : "☀"}
             </button>
         </div>
     </header>
