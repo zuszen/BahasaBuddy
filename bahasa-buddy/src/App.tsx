@@ -153,6 +153,7 @@ function App() {
           darkMode={darkMode}
           onToggleTheme={() => setDarkMode(!darkMode)}
           mode={mode}
+          onModeChange={setMode}
           />
         
         {/* Chat container: if touch the menu will close */}

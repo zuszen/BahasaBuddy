@@ -7,9 +7,10 @@ interface HeaderProps {
     mode: ChatMode;
     onMenuClick: () => void;
     onToggleTheme: () => void;
+    onModeChange: (mode: ChatMode) => void;
 }
 
-function Header({ menuOpen, onMenuClick, darkMode, onToggleTheme, mode }: HeaderProps) {
+function Header({ menuOpen, onMenuClick, darkMode, onToggleTheme, mode, onModeChange }: HeaderProps) {
 
     const modeLabels: Record<ChatMode, string> = {
         "in-to-en": "Indonesian → English",
@@ -32,13 +33,28 @@ function Header({ menuOpen, onMenuClick, darkMode, onToggleTheme, mode }: Header
             </button>
             )}
 
-            <h1>Mode: {modeLabels[mode]}</h1>
+            <div
+
+                className="theme-toggle"
+                title="Change mode"
+                onClick={() => {
+                    if (mode === "in-to-en") {
+                        onModeChange("en-to-in");
+                    } else if (mode === "en-to-in") {
+                        onModeChange("in-to-en");
+                    }
+                }}
+            >
+                <h1>Mode: {modeLabels[mode]}</h1>
+            </div>
+            
         </div>
 
         <div className="header-right">
             <button
                 className="theme-button"
                 aria-label="Toggle theme"
+                title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
                 onClick={onToggleTheme}
                 >
                 {darkMode ? "☀" : "☾"}

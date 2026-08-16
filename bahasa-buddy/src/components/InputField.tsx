@@ -23,7 +23,7 @@ function InputField({ onSendMessage }: InputFieldProps) {
         value={message}
         onChange={(event) => setMessage(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === "Enter" && !event.shiftKey) {
+          if (event.key === "Enter" && event.ctrlKey) {
             event.preventDefault();
             handleSubmit();
           }

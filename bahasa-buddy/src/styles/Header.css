@@ -51,3 +51,7 @@
 .theme-button:hover {
   background-color: var(--hover-bg);
 }
+
+.theme-toggle {
+  cursor: pointer;
+}
