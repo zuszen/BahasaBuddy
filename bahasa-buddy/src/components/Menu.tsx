@@ -48,6 +48,17 @@ function Menu({ onClose, mode, onModeChange, onExport }: MenuProps) {
           )}
         </button>
 
+        <button
+          className="menu-item"
+          onClick={() => onModeChange("conversation")}
+        >
+          <span>Conversation</span>
+
+          {mode === "conversation" && (
+            <span className="active-indicator" />
+          )}
+        </button>
+
         {/* Export Chat */}  
         <div className="menu-content-bottom">
           <button

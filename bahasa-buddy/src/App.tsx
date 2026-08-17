@@ -21,7 +21,15 @@ function App() {
   const [mode, setMode] = useState<ChatMode>("in-to-en");
 
   // This holds the messages in the chat, each message has a sender and a message
-  const [messages, setMessages] = useState<MessageData[]>([]);
+  const [messages, setMessages] = useState<MessageData[]>([
+  {
+    // set intial message
+    id: crypto.randomUUID(),
+    sender: "BahasaBuddy",
+    message: "Hi! Send me an Indonesian word or phrase, and I'll translate it into English.",
+  },
+  ]);
+
 
   // This holds the loading state for when the backend is processing a message
   const [loading, setLoading] = useState(false);
@@ -42,8 +50,44 @@ function App() {
 
     return () => clearInterval(interval);
   }, [loading]);
-  
 
+  // Check mode and send message if there's a change
+  const handleModeChange = (newMode: ChatMode) => {
+    let msg= "";
+
+    // if no change
+    if (newMode === mode) return;
+
+    // if change to in-en
+    else if(newMode === "in-to-en"){
+      msg = "Send me an Indonesian word or phrase, and I'll translate it into English.";
+    }
+
+    // if change to en-in
+    else if(newMode === "en-to-in"){
+      msg = "Send me an English word or phrase, and I'll translate it into Indonesian.";
+    }
+    // if change to convo
+    else if(newMode === "conversation"){
+      msg = "Let's practice Indonesian through conversation. Send me a message to get started!";
+    }
+
+    const botMessage: MessageData = {
+          id: crypto.randomUUID(),
+          sender: "BahasaBuddy",
+          message: msg,
+        };
+
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      botMessage,
+    ]);
+    
+    setMode(newMode);
+  };
+
+  
+  // Handle user message
   const handleSendMessage = async (message: string) => {
     // Show user's message immediately
     const userMessage: MessageData = {
@@ -60,42 +104,80 @@ function App() {
     // Start processing indicator
     setLoading(true);
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: message,
-          mode: mode,
-        }),
-      });
+    if (mode !== "conversation") {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/translate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: message,
+            mode: mode,
+          }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      console.log(
-        "Frontend Gemini response:",
-        JSON.stringify(data.message)
-      );
+        // Add backend response to chat
+        const botMessage: MessageData = {
+          id: crypto.randomUUID(),
+          sender: "BahasaBuddy",
+          message: data.message,
+        };
 
-      // Add backend response to chat
-      const botMessage: MessageData = {
-        id: crypto.randomUUID(),
-        sender: "BahasaBuddy",
-        message: data.message,
-      };
+        setMessages((currentMessages) => [
+          ...currentMessages,
+          botMessage,
+        ]);
+      } 
+        
+      catch (error) {
+        console.error("Backend error:", error);
+      } 
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        botMessage,
-      ]);
-      } catch (error) {
-      console.error("Backend error:", error);
-      } finally {
-      // Stop processing indicator
-      setLoading(false);
+      finally {
+        // Stop processing indicator
+        setLoading(false);
       }
+    }
+
+    // if mode is conversation
+    else{
+      try{
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/conversation`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: messages,
+          }),
+        });
+
+        const data = await response.json();
+
+        const botMessage: MessageData = {
+          id: crypto.randomUUID(),
+          sender: "BahasaBuddy",
+          message: data.message,
+        };
+
+        setMessages((currentMessages) => [
+          ...currentMessages,
+          botMessage,
+        ]);
+      }
+      catch (error) {
+        console.error("Backend error:", error);
+      } 
+
+      finally {
+        // Stop processing indicator
+        setLoading(false);
+      }
+    }
+    
   };
 
   // Function to export chat messages to a text file
@@ -141,7 +223,7 @@ function App() {
         <Menu
           onClose={() => setMenuOpen(false)}
           mode={mode}
-          onModeChange={setMode}
+          onModeChange={handleModeChange}
           onExport={exportChat}
         />
       )}
@@ -153,7 +235,7 @@ function App() {
           darkMode={darkMode}
           onToggleTheme={() => setDarkMode(!darkMode)}
           mode={mode}
-          onModeChange={setMode}
+          onModeChange={handleModeChange}
           />
         
         {/* Chat container: if touch the menu will close */}

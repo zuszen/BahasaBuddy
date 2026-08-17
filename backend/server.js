@@ -16,7 +16,7 @@ const ai = new GoogleGenAI({
 
 // List of available Gemini models
 const models = [
-  "gemini-3.7-flash",
+  "gemini-flash-latest",
   "gemini-3.6-flash",
   "gemini-3.5-flash",
   "gemini-3.5-flash-lite",
@@ -26,14 +26,16 @@ const models = [
   "gemini-2.5-flash-lite",
 ];
 
+const chatModels = [
+  "gemma-4-31b-it",
+  "gemma-4-26b-a4b-it",
+];
+
 const exhaustedModels = new Set();
+const exhaustedChatModels = new Set();
 
-app.post("/api/chat", async (req, res) => {
+app.post("/api/translate", async (req, res) => {
   const { message, mode } = req.body;
-
-  // Debugging
-  console.log("User:", message);
-  console.log("Mode:", mode);
 
   let prompt;
   let interaction = null;
@@ -143,8 +145,6 @@ app.post("/api/chat", async (req, res) => {
       throw lastError;
     }
 
-    console.log("Gemini response:", interaction.output_text);
-
     res.json({
       message: interaction.output_text,
     });
@@ -157,7 +157,7 @@ app.post("/api/chat", async (req, res) => {
     ) {
       return res.status(429).json({
         message:
-          "All available Gemini models have reached their current quota. Please try again later.",
+          "All available models have reached their current quota. Please try again later.",
       });
     }
 
@@ -166,6 +166,102 @@ app.post("/api/chat", async (req, res) => {
     });
   }
 });
+
+app.post("/api/conversation", async (req, res) => {
+  const { messages }  = req.body;
+
+  let prompt;
+  let interaction = null;
+  let lastError = null;
+
+  prompt = `
+    You are BahasaBuddy, an Indonesian language-learning assistant.
+
+    Your goal is to help the user practice Indonesian through conversation.
+
+    When responding:
+    - Continue the conversation naturally.
+    - Use Indonesian appropriate to the user's level.
+    - Correct meaningful grammar or vocabulary mistakes.
+    - Explain corrections briefly when necessary.
+    - Reuse vocabulary the user has encountered before.
+    - Introduce new vocabulary naturally rather than overwhelming the user.
+    - Keep responses conversational.
+  `;
+
+  const contents = messages.map((msg) => ({
+    role: msg.sender === "You" ? "user" : "model",
+    parts: [{ text: msg.message }],
+  }));
+
+  try{
+    for (const model of chatModels) {
+
+      if (exhaustedChatModels.has(model)) {
+        console.log(`Skipping exhausted chat model: ${model}`);
+        continue;
+      }
+
+      try{
+        console.log(`\nTrying model: ${model} \n`);
+
+        interaction = await ai.models.generateContent({
+          model,
+          config: 
+          {
+            systemInstruction: prompt,
+          },
+          contents,
+        });
+
+        console.log(`Successful model: ${model}`);
+        break;
+
+      }
+      catch(error) {
+        lastError = error;
+
+        if (
+          error.code === "too_many_requests" ||
+          error.message?.includes("Quota exceeded")
+        ) {
+          console.log(`Quota reached for ${model}. Marking as exhausted.`);
+          exhaustedChatModels.add(model);
+          continue;
+        }
+
+        throw error;
+      }
+  }
+    if (!interaction) {
+      throw lastError;
+    }
+
+    console.log("Gemini response:", interaction.text);
+
+    res.json({
+      message: interaction.text,
+    });
+
+  } catch (error) {
+    console.error("Gemini error:", error);
+
+    if (
+      error.code === "too_many_requests" ||
+      error.message?.includes("Quota exceeded")
+    ) {
+      return res.status(429).json({
+        message:
+          "All available models have reached their current quota. Please try again later.",
+      });
+    }
+
+    res.status(500).json({
+      message: "Sorry, something went wrong.",
+    });
+  }
+});
+
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Backend running on port ${PORT}`);
