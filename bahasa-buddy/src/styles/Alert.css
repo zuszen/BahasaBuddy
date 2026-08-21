@@ -11,8 +11,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border: 1px solid black;
 }
 
 .alert-container button {
@@ -24,10 +22,11 @@
     justify-content: center;
 
     width: 30px;
-    height: 30px;
+    min-height: 30px;
 
     border: none;
     background: transparent;
+    color: inherit;
     cursor: pointer;
 
     border-radius: 3px;
@@ -44,4 +43,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.alert-container.success {
+    background-color: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #166534;
+}
+
+.alert-container.warning {
+    background-color: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+}
+
+.alert-container.error {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
 }
