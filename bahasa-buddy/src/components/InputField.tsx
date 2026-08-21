@@ -1,13 +1,15 @@
 import { useState } from "react";
 import "../styles/InputField.css";
+import type { AlertType } from "../types/AlertType"
 
 interface InputFieldProps {
   onSendMessage: (message: string) => void;
   loading: boolean;
-  onAlert: (alertMsg: string) => void;
+  onAlertMessage: (alertMsg: string) => void;
+  onAlertType: (alertType: AlertType | null) => void;
 }
 
-function InputField({ onSendMessage, loading, onAlert }: InputFieldProps) {
+function InputField({ onSendMessage, loading, onAlertMessage, onAlertType }: InputFieldProps) {
   const [message, setMessage] = useState("");
 
   const handleSubmit = async () => {
@@ -18,7 +20,8 @@ function InputField({ onSendMessage, loading, onAlert }: InputFieldProps) {
 
     // if there's current message
     if(loading){
-      onAlert("processing");
+      onAlertMessage("A message is still processing.");
+      onAlertType("warning");
       return;
     }
 

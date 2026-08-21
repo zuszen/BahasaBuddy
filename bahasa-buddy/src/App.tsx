@@ -204,7 +204,8 @@ function App() {
           <InputField 
               onSendMessage={handleSendMessage}
               loading={loading}
-              onAlert={setAlertMessage} />
+              onAlertMessage={setAlertMessage}
+              onAlertType={setAlertType} />
         </div>
       </div>
       
