@@ -44,7 +44,14 @@ function App() {
   }, [loading]);
   
 
-  const handleSendMessage = async (message: string) => {
+  const handleSendMessage = async (message: string): Promise<boolean> => {
+
+    // Check if still processing
+    if (loading) {
+      alert("Please wait for the current message to finish processing.");
+      return false;
+    }
+
     // Show user's message immediately
     const userMessage: MessageData = {
       id: crypto.randomUUID(),
@@ -74,11 +81,6 @@ function App() {
 
       const data = await response.json();
 
-      console.log(
-        "Frontend Gemini response:",
-        JSON.stringify(data.message)
-      );
-
       // Add backend response to chat
       const botMessage: MessageData = {
         id: crypto.randomUUID(),
@@ -90,8 +92,11 @@ function App() {
         ...currentMessages,
         botMessage,
       ]);
+
+      return true;
       } catch (error) {
       console.error("Backend error:", error);
+      return false;
       } finally {
       // Stop processing indicator
       setLoading(false);

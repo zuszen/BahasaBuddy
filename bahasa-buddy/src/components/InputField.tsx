@@ -2,19 +2,23 @@ import { useState } from "react";
 import "../styles/InputField.css";
 
 interface InputFieldProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string) => Promise<boolean>;
 }
 
 function InputField({ onSendMessage }: InputFieldProps) {
   const [message, setMessage] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // if textarea is empty
     if (message.trim() === "") {
       return;
     }
 
-    onSendMessage(message);
-    setMessage("");
+    // if message is sent to backend
+    const sent = await onSendMessage(message);
+    if (sent){
+      setMessage("");
+    }
   };
 
   return (
