@@ -5,9 +5,11 @@ import Header from "./components/Header";
 import Menu from "./components/Menu";
 import InputField from "./components/InputField";
 import Message from "./components/Message";
+import AlertNotif from "./components/Alert";
 
 import type { MessageData } from "./types/Message";
 import type { ChatMode } from "./types/ChatMode";
+import type { AlertType } from "./types/AlertType";
 
 import { pdf } from "@react-pdf/renderer";
 import ChatPDF from "./components/ChatPDF";
@@ -16,9 +18,13 @@ function App() {
 
   // Set Initial States
   const [menuOpen, setMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState( // Set the dark mode based on the user's system preference
+  const [darkMode, setDarkMode] = useState( // Set the mode based on the user's system preference
                                   window.matchMedia("(prefers-color-scheme: dark)").matches); 
   const [mode, setMode] = useState<ChatMode>("in-to-en");
+
+  // Alerts
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<AlertType | null>(null);
 
   // This holds the messages in the chat, each message has a sender and a message
   const [messages, setMessages] = useState<MessageData[]>([]);
@@ -98,7 +104,8 @@ function App() {
   // Function to export chat messages to a text file
   const exportChat = async () => {
     if (messages.length === 0) {
-      alert("No messages to export.");
+      setAlertMessage("Nothing to export");
+      setAlertType("warning");
       return;
     }
 
@@ -196,10 +203,19 @@ function App() {
         >
           <InputField 
               onSendMessage={handleSendMessage}
-              loading={loading} />
+              loading={loading}
+              onAlert={setAlertMessage} />
         </div>
       </div>
       
+      { alertMessage && (
+        <AlertNotif 
+          alertMessage={alertMessage} 
+          alertType={alertType}
+          onAlertMessage={setAlertMessage}
+          onAlertType={setAlertType}
+          />
+        )}
     </div>
   )
 }

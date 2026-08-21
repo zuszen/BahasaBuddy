@@ -4,9 +4,10 @@ import "../styles/InputField.css";
 interface InputFieldProps {
   onSendMessage: (message: string) => void;
   loading: boolean;
+  onAlert: (alertMsg: string) => void;
 }
 
-function InputField({ onSendMessage, loading }: InputFieldProps) {
+function InputField({ onSendMessage, loading, onAlert }: InputFieldProps) {
   const [message, setMessage] = useState("");
 
   const handleSubmit = async () => {
@@ -17,7 +18,7 @@ function InputField({ onSendMessage, loading }: InputFieldProps) {
 
     // if there's current message
     if(loading){
-      alert("Please wait for the current message to finish processing.");
+      onAlert("processing");
       return;
     }
 
