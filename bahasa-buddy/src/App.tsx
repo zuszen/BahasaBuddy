@@ -44,13 +44,7 @@ function App() {
   }, [loading]);
   
 
-  const handleSendMessage = async (message: string): Promise<boolean> => {
-
-    // Check if still processing
-    if (loading) {
-      alert("Please wait for the current message to finish processing.");
-      return false;
-    }
+  const handleSendMessage = async (message: string) => {
 
     // Show user's message immediately
     const userMessage: MessageData = {
@@ -93,10 +87,8 @@ function App() {
         botMessage,
       ]);
 
-      return true;
       } catch (error) {
       console.error("Backend error:", error);
-      return false;
       } finally {
       // Stop processing indicator
       setLoading(false);
@@ -202,7 +194,9 @@ function App() {
             }
           }}
         >
-          <InputField onSendMessage={handleSendMessage} />
+          <InputField 
+              onSendMessage={handleSendMessage}
+              loading={loading} />
         </div>
       </div>
       

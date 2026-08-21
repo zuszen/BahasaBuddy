@@ -2,10 +2,11 @@ import { useState } from "react";
 import "../styles/InputField.css";
 
 interface InputFieldProps {
-  onSendMessage: (message: string) => Promise<boolean>;
+  onSendMessage: (message: string) => void;
+  loading: boolean;
 }
 
-function InputField({ onSendMessage }: InputFieldProps) {
+function InputField({ onSendMessage, loading }: InputFieldProps) {
   const [message, setMessage] = useState("");
 
   const handleSubmit = async () => {
@@ -14,11 +15,14 @@ function InputField({ onSendMessage }: InputFieldProps) {
       return;
     }
 
-    // if message is sent to backend
-    const sent = await onSendMessage(message);
-    if (sent){
-      setMessage("");
+    // if there's current message
+    if(loading){
+      alert("Please wait for the current message to finish processing.");
+      return;
     }
+
+    onSendMessage(message);
+    setMessage("");
   };
 
   return (
